@@ -1,0 +1,23 @@
+{
+  "name": "bamazon_mysql_node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bereznd1/bamazon_mysql_node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bereznd1/bamazon_mysql_node/issues"
+  },
+  "homepage": "https://github.com/bereznd1/bamazon_mysql_node#readme",
+  "dependencies": {
+    "inquirer": "^5.2.0",
+    "mysql": "^2.15.0"
+  }
+}
