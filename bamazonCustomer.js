@@ -65,18 +65,101 @@ function whatBuy() {
         .then(function (answer) {
             // when finished prompting, insert a new item into the db with that info
             connection.query(
-                "INSERT INTO auctions SET ?",
+                "SELECT stock_quantity FROM products WHERE ?",
                 {
-                    item_name: answer.item,
-                    category: answer.category,
-                    starting_bid: answer.startingBid,
-                    highest_bid: answer.startingBid
+                    item_id: answer.id,
                 },
-                function (err) {
+                function (err, res) {
                     if (err) throw err;
-                    console.log("Your auction was created successfully!");
-                    // re-prompt the user for if they want to bid or post
-                    start();
+
+                    if (res[0].stock_quantity >= answer.amount) {
+
+                        connection.query(
+                            "UPDATE products SET ? WHERE ?",
+                            [
+                                {
+                                    stock_quantity: res[0].stock_quantity - answer.amount
+                                },
+
+                                {
+                                    item_id: answer.id
+                                }
+
+                            ],
+                            function (err, res) {
+
+                                if (err) throw err;
+
+                                console.log("\n" + "Purchase completed.");
+
+                            }
+                        );
+
+                        connection.query(
+                            "SELECT item_id, product_name, price FROM products WHERE ?",
+                            {
+                                item_id: answer.id,
+                            },
+                            function (err, res) {
+
+                                if (err) throw err;
+
+                                console.log("The total cost of your purchase is: $" + answer.amount * res[0].price + "\n");
+
+
+                                inquirer
+                                .prompt([
+                                    {
+                                        name: "nextPurchase",
+                                        type: "list",                                      
+                                        message: "Would you like to make another purchase?",
+                                        choices: ["Yes", "No"]
+                                    }
+                                ])
+
+                                .then(function (answer) {
+
+                                    if (answer.nextPurchase === "Yes") {
+                                        start();
+                                    }
+
+                                    else {
+                                        console.log("Thank you for shopping with Bamazon & have a great day!")
+                                    }
+
+                                });
+
+                            }
+                        );
+
+                    }
+
+                    else {
+                        console.log("\n" + "Insufficient quantity! So sorry!" + "\n");
+
+                        inquirer
+                        .prompt([
+                            {
+                                name: "nextPurchase",
+                                type: "list",                                      
+                                message: "Would you like to purchase something else instead?",
+                                choices: ["Yes", "No"]
+                            }
+                        ])
+
+                        .then(function (answer) {
+
+                            if (answer.nextPurchase === "Yes") {
+                                start();
+                            }
+
+                            else {
+                                console.log("\n" + "Thank you for shopping with Bamazon & have a great day!")
+                            }
+
+                        });
+                    }
+
                 }
             );
         });
