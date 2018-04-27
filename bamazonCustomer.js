@@ -1,7 +1,8 @@
+//Require the necessary NPM packages
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
-// create the connection information for the sql database
+//Create the connection information for the sql database
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -14,15 +15,15 @@ var connection = mysql.createConnection({
     database: "bamazon"
 });
 
-// connect to the mysql server and sql database
+//Connect to the mysql server and sql database
 connection.connect(function (err) {
     if (err) throw err;
 
-    // run the start function after the connection is made to prompt the user
+    //Run the start function after the connection is made to prompt the user
     start();
 });
 
-// function which prompts the user for what action they should take
+//Display all the items in stock for the user & then trigger the function that will prompt them for what they wanna buy
 function start() {
 
     connection.query("SELECT item_id, product_name, price FROM products", function (err, res) {
@@ -39,7 +40,7 @@ function start() {
     });
 }
 
-
+//Asks user what they wanna buy & how much of it
 function whatBuy() {
 
     inquirer
@@ -63,7 +64,8 @@ function whatBuy() {
             }
         ])
         .then(function (answer) {
-            // when finished prompting, insert a new item into the db with that info
+            
+            //Select the stock quantity of the item they chose
             connection.query(
                 "SELECT stock_quantity FROM products WHERE ?",
                 {
@@ -72,8 +74,10 @@ function whatBuy() {
                 function (err, res) {
                     if (err) throw err;
 
+                    //If the amount in stock is greater than or equal to the amount the user wants to buy...
                     if (res[0].stock_quantity >= answer.amount) {
 
+                        //Update the stock quantity of that item in the DB to reflect the user's purchase
                         connection.query(
                             "UPDATE products SET ? WHERE ?",
                             [
@@ -95,8 +99,9 @@ function whatBuy() {
                             }
                         );
 
+                        //Select the item the user wants to buy from the DB
                         connection.query(
-                            "SELECT item_id, product_name, price FROM products WHERE ?",
+                            "SELECT price FROM products WHERE ?",
                             {
                                 item_id: answer.id,
                             },
@@ -104,82 +109,66 @@ function whatBuy() {
 
                                 if (err) throw err;
 
-                                console.log("The total cost of your purchase is: $" + answer.amount * res[0].price + "\n");
+                                //Calculate the user's total purchase by multiplying their desired amount by that item's price
+                                var total = answer.amount * res[0].price;
+                                total = total.toFixed(2);
+                                console.log("The total cost of your purchase is: $" + total + "\n");
 
-
+                                //Ask the user if they wanna make another purchase
+                                //If "yes", display all items in stock again
+                                //If "no", give a thank you message
                                 inquirer
-                                .prompt([
-                                    {
-                                        name: "nextPurchase",
-                                        type: "list",                                      
-                                        message: "Would you like to make another purchase?",
-                                        choices: ["Yes", "No"]
-                                    }
-                                ])
+                                    .prompt([
+                                        {
+                                            name: "nextPurchase",
+                                            type: "list",
+                                            message: "Would you like to make another purchase?",
+                                            choices: ["Yes", "No"]
+                                        }
+                                    ])
 
-                                .then(function (answer) {
+                                    .then(function (answer) {
 
-                                    if (answer.nextPurchase === "Yes") {
-                                        start();
-                                    }
+                                        if (answer.nextPurchase === "Yes") {
+                                            start();
+                                        }
 
-                                    else {
-                                        console.log("Thank you for shopping with Bamazon & have a great day!")
-                                    }
+                                        else {
+                                            console.log("\nThank you for shopping with Bamazon & have a great day!")
+                                        }
 
-                                });
-
+                                    });
                             }
                         );
-
                     }
 
+                    //If the amount in stock is less than the amount the user wants to buy, ask them if they wanna make another purchase instead
                     else {
                         console.log("\n" + "Insufficient quantity! So sorry!" + "\n");
 
                         inquirer
-                        .prompt([
-                            {
-                                name: "nextPurchase",
-                                type: "list",                                      
-                                message: "Would you like to purchase something else instead?",
-                                choices: ["Yes", "No"]
-                            }
-                        ])
+                            .prompt([
+                                {
+                                    name: "nextPurchase",
+                                    type: "list",
+                                    message: "Would you like to purchase something else instead?",
+                                    choices: ["Yes", "No"]
+                                }
+                            ])
 
-                        .then(function (answer) {
+                            .then(function (answer) {
 
-                            if (answer.nextPurchase === "Yes") {
-                                start();
-                            }
+                                if (answer.nextPurchase === "Yes") {
+                                    start();
+                                }
 
-                            else {
-                                console.log("\n" + "Thank you for shopping with Bamazon & have a great day!")
-                            }
+                                else {
+                                    console.log("\n" + "Thank you for shopping with Bamazon & have a great day!")
+                                }
 
-                        });
+                            });
                     }
-
                 }
             );
         });
-
-
 }
-
-// inquirer
-// .prompt({
-//   name: "postOrBid",
-//   type: "rawlist",
-//   message: "Would you like to [POST] an auction or [BID] on an auction?",
-//   choices: ["POST", "BID"]
-// })
-// .then(function(answer) {
-//   // based on their answer, either call the bid or the post functions
-//   if (answer.postOrBid.toUpperCase() === "POST") {
-//     postAuction();
-//   }
-//   else {
-//     bidAuction();
-//   }
-// });
