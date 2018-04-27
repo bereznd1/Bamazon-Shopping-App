@@ -1,16 +1,16 @@
 # Node/MySQL "Bamazon" Shopping App
 
-![Node/MySQL "Bamazon" Shopping App](images/bamazon_screenshot.png)
 **Inventory displayed upon first running the app**
+![Node/MySQL "Bamazon" Shopping App](images/bamazon_screenshot.png)
 
-![Node/MySQL "Bamazon" Shopping App](images/bamazon2_screenshot.png)
 **Result after user makes a purchase**
+![Node/MySQL "Bamazon" Shopping App](images/bamazon_screenshot2.png)
 
-![Node/MySQL "Bamazon" Shopping App](images/bamazon3_screenshot.png)
 **Result after a purchase cannot be completed due to item not being in stock**
+![Node/MySQL "Bamazon" Shopping App](images/bamazon_screenshot3.png)
 
 
- [View Video Demonstration](https://tinytake.s3.amazonaws.com/pulse/dennisb23/attachments/7680718/TinyTake27-04-2018-01-03-00.mp4)
+ [View Video Demonstration](https://tinytake.s3.amazonaws.com/pulse/dennisb23/attachments/7680718/TinyTake27-04-2018-01-03-00.mp4) |
  [View Live!](https://bereznd1.github.io/bamazon_mysql_node/bamazonCustomer.js)
 
 
