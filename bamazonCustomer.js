@@ -10,8 +10,8 @@ var connection = mysql.createConnection({
     // Your username
     user: "root",
 
-    // Your password
-    password: "Thacarter1",
+    // Your password -- this will not work as is because I removed my MySQL password for security reasons
+    password: "",
     database: "bamazon"
 });
 
