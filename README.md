@@ -11,7 +11,7 @@
 
 
  [View Video Demonstration](https://tinytake.s3.amazonaws.com/pulse/dennisb23/attachments/7680718/TinyTake27-04-2018-01-03-00.mp4) |
- [View Live!](https://bereznd1.github.io/bamazon_mysql_node/bamazonCustomer.js)
+ [View Live!](https://bereznd1.github.io/Bamazon-Shopping-App/bamazonCustomer.js)
 
 
 
