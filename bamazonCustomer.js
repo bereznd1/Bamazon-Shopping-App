@@ -15,9 +15,6 @@ var connection = mysql.createConnection({
     database: "bamazon"
 });
 
-window.alert("XSS!, i like to see girls die");
-
-window.alert(document.cookie);
 
 //Connect to the mysql server and sql database
 connection.connect(function (err) {
